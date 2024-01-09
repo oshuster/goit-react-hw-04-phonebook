@@ -1,0 +1,8 @@
+.container {
+  padding: 15px;
+  max-width: 400px;
+  font-size: 20px;
+  line-height: 1.5;
+  height: 100vh;
+  color: #010101;
+}
