@@ -7,11 +7,13 @@ import { loadStorage, saveStorage } from './helpers/localeStorage';
 
 import css from './app.module.css';
 
+const INITIAL_STATE = {
+  contacts: [],
+  filter: '',
+};
+
 class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+  state = { ...INITIAL_STATE };
 
   regExpPattern = {
     name: new RegExp(
@@ -61,12 +63,17 @@ class App extends Component {
     }
   };
 
-  componentDidUpdate = () => {
-    saveStorage('contacts', this.state.contacts);
+  componentDidMount = () => {
+    const contactList = loadStorage('contacts');
+    if (contactList) {
+      this.setState({ contacts: loadStorage('contacts') });
+    } else {
+      this.setState(INITIAL_STATE);
+    }
   };
 
-  componentDidMount = () => {
-    this.setState({ contacts: loadStorage('contacts') });
+  componentDidUpdate = () => {
+    saveStorage('contacts', this.state.contacts);
   };
 
   filterKey = key => {
