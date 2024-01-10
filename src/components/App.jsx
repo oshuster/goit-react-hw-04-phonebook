@@ -12,6 +12,8 @@ const INITIAL_STATE = {
   filter: '',
 };
 
+const KEY = 'contacts';
+
 class App extends Component {
   state = { ...INITIAL_STATE };
 
@@ -64,16 +66,16 @@ class App extends Component {
   };
 
   componentDidMount = () => {
-    const contactList = loadStorage('contacts');
+    const contactList = loadStorage(KEY);
     if (contactList) {
-      this.setState({ contacts: loadStorage('contacts') });
+      this.setState({ contacts: contactList });
     } else {
       this.setState(INITIAL_STATE);
     }
   };
 
   componentDidUpdate = () => {
-    saveStorage('contacts', this.state.contacts);
+    saveStorage(KEY, this.state.contacts);
   };
 
   filterKey = key => {
