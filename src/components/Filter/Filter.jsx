@@ -1,23 +1,20 @@
-import { Component } from 'react';
 import css from './filter.module.css';
 
-class Filter extends Component {
-  filterValue = e => {
+const Filter = ({ filterKey }) => {
+  const filterValue = e => {
     const key = e.target.value.toLowerCase().trim();
-    this.props.filterKey(key);
+    filterKey(key);
   };
 
-  render() {
-    return (
-      <input
-        className={`form-control me-2 ${css.search}`}
-        type="search"
-        placeholder="Search"
-        aria-label="Search"
-        onChange={this.filterValue}
-      />
-    );
-  }
-}
+  return (
+    <input
+      className={`form-control me-2 ${css.search}`}
+      type="search"
+      placeholder="Search"
+      aria-label="Search"
+      onChange={filterValue}
+    />
+  );
+};
 
 export default Filter;
