@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import { nanoid } from 'nanoid';
@@ -27,8 +27,10 @@ const App = () => {
     if (regExpPattern.name.test(name) && regExpPattern.number.test(number)) {
       // перевірка на наявність контакту по номеру
       if (!contacts.some(contact => contact.number === number)) {
+        console.log('name', name);
+        console.log('number', number);
         setContacts(prevState =>
-          prevState.push({ id: nanoid(), name, number })
+          setContacts([...prevState, { id: nanoid(), name, number }])
         );
       } else {
         alert('Такий контакт вже існує');
@@ -55,18 +57,20 @@ const App = () => {
     }
   };
 
-  // componentDidMount = () => {
-  //   const contactList = loadStorage(KEY);
-  //   if (contactList) {
-  //     this.setState({ contacts: contactList });
-  //   } else {
-  //     this.setState(INITIAL_STATE);
-  //   }
-  // };
+  //on load page
+  useEffect(() => {
+    const contactList = loadStorage(KEY);
+    if (contactList) {
+      setContacts(contactList);
+    } else {
+      setContacts([]);
+    }
+  }, []);
 
-  // componentDidUpdate = () => {
-  //   saveStorage(KEY, this.state.contacts);
-  // };
+  //on update state
+  useEffect(() => {
+    saveStorage(KEY, contacts);
+  }, [contacts]);
 
   const filterKey = key => {
     setFilter(key);
@@ -85,89 +89,5 @@ const App = () => {
     </div>
   );
 };
-
-// class App extends Component {
-//   state = { ...INITIAL_STATE };
-
-//   regExpPattern = {
-//     name: new RegExp(
-//       "^[a-zA-Zа-яА-Я]+(([' \\-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-//     ),
-//     number: new RegExp(
-//       '\\+?\\d{1,4}?[ .\\-\\s]?\\(?\\d{1,3}?\\)?[ .\\-\\s]?\\d{1,4}[ .\\-\\s]?\\d{1,4}[ .\\-\\s]?\\d{1,9}'
-//     ),
-//   };
-//
-//   saveContact = ({ name, number }) => {
-//     const { contacts } = this.state;
-//     // перевірка на коректність введених даних
-//     if (
-//       this.regExpPattern.name.test(name) &&
-//       this.regExpPattern.number.test(number)
-//     ) {
-//       // перевірка на наявність контакту по номеру
-//       if (!contacts.some(contact => contact.number === number)) {
-//         this.setState({
-//           contacts: [...contacts, { id: nanoid(), name, number }],
-//         });
-//       } else {
-//         alert('Такий контакт вже існує');
-//         return;
-//       }
-//     } else {
-//       alert('Введені дані некоректні');
-//       return;
-//     }
-//   };
-
-//   deleteContact = id => {
-//     const { contacts } = this.state;
-//     const newList = contacts.filter(contact => contact.id !== id);
-//     this.setState({ contacts: [...newList] });
-//   };
-
-//   getFilteredContacts = () => {
-//     const { contacts, filter: filterKey } = this.state;
-//     if (!filterKey) {
-//       return contacts;
-//     } else {
-//       return contacts.filter(contact =>
-//         contact.name.toLowerCase().includes(filterKey)
-//       );
-//     }
-//   };
-
-//   componentDidMount = () => {
-//     const contactList = loadStorage(KEY);
-//     if (contactList) {
-//       this.setState({ contacts: contactList });
-//     } else {
-//       this.setState(INITIAL_STATE);
-//     }
-//   };
-
-//   componentDidUpdate = () => {
-//     saveStorage(KEY, this.state.contacts);
-//   };
-
-//   filterKey = key => {
-//     this.setState({ filter: `${key}` });
-//   };
-
-//   render() {
-//     return (
-//       <div className={css.container}>
-//         <h1>Phonebook</h1>
-//         <ContactForm saveContact={this.saveContact} />
-//         <h2>Contacts</h2>
-//         <Filter filterKey={this.filterKey} />
-//         <ContactList
-//           contactlist={this.getFilteredContacts()}
-//           deleteContact={this.deleteContact}
-//         />
-//       </div>
-//     );
-//   }
-// }
 
 export default App;
